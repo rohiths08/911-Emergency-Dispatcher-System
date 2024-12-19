@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Case Statistics</h2>
+
+        <h3>Department Assignment:</h3>
+        <p>Fire Department: {{ fire_count }} cases</p>
+        <p>Healthcare Department: {{ healthcare_count }} cases</p>
+        <p>Police Department: {{ police_count }} cases</p>
+
+        <h3>Priority Level Statistics:</h3>
+        <p>High Priority: {{ high_priority }} cases</p>
+        <p>Moderate Priority: {{ moderate_priority }} cases</p>
+        <p>Low Priority: {{ low_priority }} cases</p>
+
+        <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

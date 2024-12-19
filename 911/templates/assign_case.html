@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Department</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Assign Department to Case #{{ case.id }}</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="alert">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Assign Department Form -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="department">Select Department</label>
+                <select id="department" name="department" required>
+                    <option value="Fire Dept">Fire Dept</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Police">Police</option>
+                    <option value="All 3">All 3</option>
+                    <option value="Fire & Healthcare">Fire & Healthcare</option>
+                    <option value="Fire & Police">Fire & Police</option>
+                    <option value="Healthcare & Police">Healthcare & Police</option>
+                </select>
+            </div>
+            <input type="submit" value="Assign Department">
+        </form>
+
+        <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Cases</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>All Emergency Cases</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="alert">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Search Bar -->
+        <form method="GET" action="{{ url_for('display_cases') }}" class="form-inline mb-3">
+            <input type="text" name="search_query" class="form-control" placeholder="Search by Type or Location" required>
+            <button type="submit" class="btn">Search</button>
+        </form>
+
+        <!-- Display Cases -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Case Type</th>
+                    <th>Location</th>
+                    <th>Priority</th>
+                    <th>Assigned Department</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if cases %}
+                    {% for case in cases %}
+                    <tr>
+                        <td>{{ case.case_type }}</td>
+                        <td>{{ case.location }}</td>
+                        <td>{{ case.priority }}</td>
+                        <td>{{ case.department if case.department else 'Not Assigned' }}</td>
+                        <td>
+                            <a href="{{ url_for('assign_case', id=case.id) }}" class="btn">Assign Dept</a>
+                            <a href="{{ url_for('delete_case', id=case.id) }}" class="btn delete">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No cases found. Please check back later.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>
