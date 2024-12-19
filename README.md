@@ -67,9 +67,44 @@ The database is configured to use SQLite, and the Case model is automatically cr
 ## DSA Code (C)
 The `c_dsa` folder contains the C code implementing a doubly linked list. The code demonstrates various operations like insertion, deletion, and traversal in a doubly linked list. To compile and run the C code:
 
-1. Open the `doubly_linked_list.c` file.
+1. Open the `main.c` file.
 2. Compile the C code using a C compiler:
    ```bash
-   gcc doubly_linked_list.c -o doubly_linked_list
+   gcc main.c -o main
 
-This includes all the sections you requested and should be a good fit for the README. Let me know if you'd like any further adjustments!
+
+
+This project is a Case Management System built using **Flask** and **SQLite** for the backend. It allows users to add, assign, delete, and view cases, along with viewing statistics based on departments and priorities. Additionally, there is a folder containing **C** code for implementing a **Doubly Linked List** as part of Data Structures and Algorithms (DSA).
+
+## Setup and Usage
+
+### Step 1: Install Required Packages
+Before running the Flask application, ensure you have Python installed and install Flask and Flask-SQLAlchemy.
+
+1. Open your terminal (Command Prompt or PowerShell on Windows, Terminal on macOS/Linux).
+2. Install Flask and Flask-SQLAlchemy using `pip`:
+   ```bash
+   pip install flask flask_sqlalchemy
+Step 2: Save Your Flask Code
+Save the provided Flask code into a file named app.py (or another name you prefer).
+Ensure the folder structure is correct:
+HTML templates should be saved in a folder called templates.
+Static files (like CSS, JavaScript, or images) should be saved in a folder called static.
+Step 3: Run the Flask Application
+Now that everything is set up, you can run the application:
+
+In your terminal, navigate to the folder where your app.py file is saved.
+Run the Flask application:
+   ```bash
+       python app.py
+```
+Flask will start running the app, and you should see something like this:
+```bash
+* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+```
+Step 4: Access the Application Locally
+Open your browser and go to ```http://127.0.0.1:5000/```.
+This is your local server where the Flask app is running. You should be able to see the home page of your case management application.
+
+
+**This includes all the sections you requested and should be a good fit for the README. Let me know if you'd like any further adjustments!**
