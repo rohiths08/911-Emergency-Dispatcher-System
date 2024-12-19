@@ -42,7 +42,7 @@ The repository also includes C code that demonstrates the usage of Doubly Linked
         /css
             style.css
     /c_dsa
-        doubly_linked_list.c
+        main.c
     app.py
     requirements.txt
 
