@@ -3,14 +3,17 @@
 #include <string.h>
 
 struct cases {  // Doubly Linked List with priority
+    int id;
     int pri;
-    char loc[50], type[50];
+    char loc[100], type[100];
+    char department[100];
     struct cases *rptr, *lptr;
 };
 typedef struct cases cases;
 cases* start = NULL;
 
 // Global counters for departments and priorities
+int next_id = 1;
 int fire_count = 0, healthcare_count = 0, police_count = 0;
 int high_priority = 0, moderate_priority = 0, low_priority = 0;
 
@@ -18,12 +21,16 @@ int high_priority = 0, moderate_priority = 0, low_priority = 0;
 cases* getcase() {
     cases *newcase;
     newcase = (cases*)malloc(sizeof(cases));
+    newcase->id = next_id++;
     printf("\n911, What's the emergency? ");  // case type
     scanf("%s", newcase->type);
     printf("Please provide the address: ");  // location
     scanf("%s", newcase->loc);
     printf("Enter 1. High priority 2. Moderate 3. Low: ");
     scanf("%d", &newcase->pri);
+
+    // Initialize department as empty
+    newcase->department[0] = '\0';
 
     // Update priority counters
     if (newcase->pri == 1) high_priority++;
@@ -205,6 +212,193 @@ void search_cases(char query[]) {
         printf("No cases found matching the search query.\n");
     }
 }
+
+// ============================================================
+// PYTHON LIBRARY FUNCTIONS (for ctypes integration)
+// ============================================================
+
+// Create a case programmatically (for Python)
+cases* create_case(const char* case_type, const char* location, int priority, const char* department) {
+    cases *newcase = (cases*)malloc(sizeof(cases));
+    if (newcase == NULL) return NULL;
+    
+    newcase->id = next_id++;
+    newcase->pri = priority;
+    strncpy(newcase->type, case_type, sizeof(newcase->type) - 1);
+    newcase->type[sizeof(newcase->type) - 1] = '\0';
+    strncpy(newcase->loc, location, sizeof(newcase->loc) - 1);
+    newcase->loc[sizeof(newcase->loc) - 1] = '\0';
+    
+    if (department != NULL) {
+        strncpy(newcase->department, department, sizeof(newcase->department) - 1);
+        newcase->department[sizeof(newcase->department) - 1] = '\0';
+    } else {
+        newcase->department[0] = '\0';
+    }
+    
+    newcase->rptr = newcase->lptr = NULL;
+    
+    // Update priority counters
+    if (priority == 1) high_priority++;
+    else if (priority == 2) moderate_priority++;
+    else if (priority == 3) low_priority++;
+    
+    return newcase;
+}
+
+// Add a new case (public API for Python)
+int add_case(const char* case_type, const char* location, int priority, const char* department) {
+    cases* newcase = create_case(case_type, location, priority, department);
+    if (newcase == NULL) return -1;
+    
+    insert_rear(newcase);
+    return newcase->id;
+}
+
+// Get case count
+int get_case_count() {
+    int count = 0;
+    cases* temp = start;
+    while (temp != NULL) {
+        count++;
+        temp = temp->rptr;
+    }
+    return count;
+}
+
+// Get case by ID
+cases* get_case_by_id(int id) {
+    cases* temp = start;
+    while (temp != NULL) {
+        if (temp->id == id) return temp;
+        temp = temp->rptr;
+    }
+    return NULL;
+}
+
+// Delete case by ID (for Python)
+int delete_case(int id) {
+    cases* temp = start;
+    
+    while (temp != NULL && temp->id != id) {
+        temp = temp->rptr;
+    }
+    
+    if (temp == NULL) return 0; // Not found
+    
+    // Update priority counters
+    if (temp->pri == 1) high_priority--;
+    else if (temp->pri == 2) moderate_priority--;
+    else if (temp->pri == 3) low_priority--;
+    
+    // Remove from list
+    if (temp->lptr != NULL) {
+        temp->lptr->rptr = temp->rptr;
+    } else {
+        start = temp->rptr;
+    }
+    
+    if (temp->rptr != NULL) {
+        temp->rptr->lptr = temp->lptr;
+    }
+    
+    free(temp);
+    return 1; // Success
+}
+
+// Assign department to a case
+int assign_department(int id, const char* department) {
+    cases* temp = get_case_by_id(id);
+    if (temp == NULL) return 0;
+    
+    // Remove old department count
+    if (strstr(temp->department, "Fire") != NULL) fire_count--;
+    if (strstr(temp->department, "Healthcare") != NULL) healthcare_count--;
+    if (strstr(temp->department, "Police") != NULL) police_count--;
+    
+    // Update department
+    strncpy(temp->department, department, sizeof(temp->department) - 1);
+    temp->department[sizeof(temp->department) - 1] = '\0';
+    
+    // Update department counters
+    if (strstr(department, "Fire") != NULL) fire_count++;
+    if (strstr(department, "Healthcare") != NULL) healthcare_count++;
+    if (strstr(department, "Police") != NULL) police_count++;
+    
+    return 1;
+}
+
+// Get all cases (for Python to parse)
+int get_all_cases(int* ids, char* types, char* locations, int* priorities, char* departments, int max_cases) {
+    cases* temp = start;
+    int count = 0;
+    
+    while (temp != NULL && count < max_cases) {
+        ids[count] = temp->id;
+        priorities[count] = temp->pri;
+        
+        // Copy strings with proper offsets
+        strncpy(types + (count * 100), temp->type, 99);
+        types[(count * 100) + 99] = '\0';
+        
+        strncpy(locations + (count * 100), temp->loc, 99);
+        locations[(count * 100) + 99] = '\0';
+        
+        strncpy(departments + (count * 100), temp->department, 99);
+        departments[(count * 100) + 99] = '\0';
+        
+        count++;
+        temp = temp->rptr;
+    }
+    
+    return count;
+}
+
+// Get statistics (for Python)
+void get_statistics(int* stats) {
+    stats[0] = fire_count;
+    stats[1] = healthcare_count;
+    stats[2] = police_count;
+    stats[3] = high_priority;
+    stats[4] = moderate_priority;
+    stats[5] = low_priority;
+}
+
+// Search cases by query (for Python)
+int search_cases_by_query(const char* query, int* result_ids, int max_results) {
+    cases* temp = start;
+    int count = 0;
+    
+    while (temp != NULL && count < max_results) {
+        if (strstr(temp->type, query) != NULL || strstr(temp->loc, query) != NULL) {
+            result_ids[count++] = temp->id;
+        }
+        temp = temp->rptr;
+    }
+    
+    return count;
+}
+
+// Clear all cases
+void clear_all_cases() {
+    cases* temp = start;
+    cases* next;
+    
+    while (temp != NULL) {
+        next = temp->rptr;
+        free(temp);
+        temp = next;
+    }
+    
+    start = NULL;
+    fire_count = healthcare_count = police_count = 0;
+    high_priority = moderate_priority = low_priority = 0;
+    next_id = 1;
+}
+
+// ============================================================
+// ORIGINAL CLI MAIN FUNCTION
+// ============================================================
 
 // Main function
 void main() {
