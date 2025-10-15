@@ -1,110 +1,251 @@
-# 911-Emergency-Dispatcher-System
-911 Emergency Dispatcher System built with Flask for managing emergency cases, supporting case addition, assignment to departments, and statistics. Includes a C program demonstrating case handling using Doubly Linked List for case insertion, deletion, and traversal. SQLite database integration
-# 911 Emergency Dispatcher System
+# 🚨 911 Emergency Dispatcher System — C & Python Integration
 
-## Overview
-The 911 Emergency Dispatcher System is a web application built using Flask and SQLAlchemy. It helps in managing emergency cases by assigning them to respective departments (Fire, Healthcare, and Police), displaying case statistics, and allowing case search, addition, and deletion. This system also includes C code implementing Data Structures and Algorithms (DSA) concepts, such as Doubly Linked List.
+## 📘 Overview
+The **911 Emergency Dispatcher System** is a hybrid **C + Python** project that integrates a **C-based doubly linked list implementation** with a **Flask web application** using **ctypes** and **shared libraries**.  
+It allows emergency dispatchers to manage cases, assign departments, view statistics, and switch seamlessly between two backends — a **C library** and an **SQLite database**.
 
-## Technologies Used
-- Python 3.x
-- Flask
-- Flask-SQLAlchemy
-- SQLite (Database)
-- C (for DSA implementation)
-- HTML/CSS (for Frontend)
+This project is both **educational** and **functional**, demonstrating real-world **C/Python interoperability**, **data structure applications**, and **web development**.
 
-## Features
-1. **Add Emergency Case**: Users can add new emergency cases with details such as case type, location, priority, and department.
-2. **Display Cases**: Users can view all emergency cases with a search functionality to filter by case type or location.
-3. **Assign Case to Department**: Cases can be assigned to Fire, Healthcare, or Police departments.
-4. **Delete Case**: Cases can be deleted from the database.
-5. **Statistics**: View statistics on case distribution by department and priority levels.
+---
 
-## DSA Implementation (C Code)
-The repository also includes C code that demonstrates the usage of Doubly Linked Lists. This implementation helps in understanding fundamental data structure concepts and provides a practical approach to solving problems related to the linked list.
+## 🧠 Key Concepts Demonstrated
+- C/Python interoperability using **ctypes**
+- Shared library creation and FFI (Foreign Function Interface)
+- Flask backend abstraction with **runtime backend switching**
+- Implementation of **Doubly Linked List** in C
+- Integration of **Database + C Backend**
+- Responsive **Emergency-themed UI** (dark mode)
 
-## Installation
+---
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/rohiths08/911-emergency-dispatcher.git
-   cd 911-emergency-dispatcher
-
-
-   /911-emergency-dispatcher
-    /templates
-        index.html
-        add_case.html
-        display_cases.html
-        assign_case.html
-        statistics.html
-    /static
-        /css
-            style.css
-    /c_dsa
-        main.c
-    app.py
-    requirements.txt
-
-## Database Setup
-The database is configured to use SQLite, and the Case model is automatically created when the app is first run. The app will create a `cases.db` file in the root directory for storing case records.
-
-## Routes
-- **Home (`/`)**: Landing page of the application.
-- **Add Case (`/add_case`)**: Add a new emergency case.
-- **Display Cases (`/display_cases`)**: View all emergency cases and search by case type or location.
-- **Assign Case (`/assign_case/<id>`)**: Assign a case to a department.
-- **Delete Case (`/delete_case/<id>`)**: Delete a case.
-- **Statistics (`/statistics`)**: View statistics about cases by department and priority.
-
-## Usage
-- **Add an Emergency Case**: Go to `/add_case` to fill out the case details.
-- **View Cases**: Go to `/display_cases` to see the list of all cases.
-- **Assign a Case**: Navigate to `/assign_case/<case_id>` and select the department to assign the case.
-- **Delete a Case**: You can delete cases from the `/display_cases` page.
-- **View Statistics**: Visit `/statistics` to see case statistics based on departments and priorities.
-
-## DSA Code (C)
-The `c_dsa` folder contains the C code implementing a doubly linked list. The code demonstrates various operations like insertion, deletion, and traversal in a doubly linked list. To compile and run the C code:
-
-1. Open the `main.c` file.
-2. Compile the C code using a C compiler:
-   ```bash
-   gcc main.c -o main
+## 🏗️ Project Structure
+      911/
+      ├── app_integrated.py # Flask app integrating both C & DB backends
+      ├── main.c # Enhanced C program (CLI + Shared Library API)
+      ├── libcases.so # Compiled shared library from main.c
+      ├── cases_wrapper.py # Python ctypes wrapper for the C library
+      ├── test_library.py # Unit tests for library integration
+      ├── static/css/style.css # Modern dark emergency theme
+      ├── templates/ # HTML templates (Jinja2)
+      └── instance/cases.db # SQLite database
 
 
+---
 
-This project is a Case Management System built using **Flask** and **SQLite** for the backend. It allows users to add, assign, delete, and view cases, along with viewing statistics based on departments and priorities. Additionally, there is a folder containing **C** code for implementing a **Doubly Linked List** as part of Data Structures and Algorithms (DSA).
+## ⚙️ What Was Done
 
-## Setup and Usage
+### 🧩 1. **C Library (`main.c`)**
+- Implements core logic using a **doubly linked list**
+- Exposes C functions for Python integration:
+  - `add_case()`
+  - `delete_case()`
+  - `assign_department()`
+  - `get_all_cases()`
+  - `search_cases()`
+  - `get_statistics()`
+- Works as both **CLI tool** and **shared library**
+- Compiled as:
+  ```bash
+  gcc -shared -o libcases.so -fPIC main.c
 
-### Step 1: Install Required Packages
-Before running the Flask application, ensure you have Python installed and install Flask and Flask-SQLAlchemy.
 
-1. Open your terminal (Command Prompt or PowerShell on Windows, Terminal on macOS/Linux).
-2. Install Flask and Flask-SQLAlchemy using `pip`:
-   ```bash
-   pip install flask flask_sqlalchemy
-Step 2: Save Your Flask Code
-Save the provided Flask code into a file named app.py (or another name you prefer).
-Ensure the folder structure is correct:
-HTML templates should be saved in a folder called templates.
-Static files (like CSS, JavaScript, or images) should be saved in a folder called static.
-Step 3: Run the Flask Application
-Now that everything is set up, you can run the application:
+## 🐍 2. Python Wrapper (`cases_wrapper.py`)
 
-In your terminal, navigate to the folder where your app.py file is saved.
-Run the Flask application:
-   ```bash
-       python app.py
-```
-Flask will start running the app, and you should see something like this:
+### 🔧 Description
+- Uses **`ctypes`** to load `libcases.so`
+- Converts **C types → Python objects**
+- Provides a **Pythonic interface** with a *singleton pattern*
+
+---
+
+## 🌐 3. Flask App (`app_integrated.py`)
+
+### ⚙️ Backend Support
+Supports **two backends**:
+- 🧩 **C Library (default)**
+- 🗃️ **SQLite Database**
+
+### 🔄 Toggle Between Backends at Runtime
 ```bash
-* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+## 🌍 Environment Variable Control
+```bash
+export BACKEND=c_library   # or database
+
+````
+
+---
+
+## 🧪 4. Test Suite (`test_library.py`)
+
+### ✅ Functionality
+
+* Verifies all **C functions via ctypes**
+
+### 🧠 Tests Include:
+
+* Adding, deleting, searching cases
+* Assigning departments
+* Calculating statistics
+
+---
+
+## 🎨 Modern UI Design
+
+### 🎭 Theme
+
+* Professional Dark Mode with Red/Blue Emergency Accents
+
+### ✨ Features
+
+* Responsive layout
+* Clean tables, badges, and cards
+* CSS variables for easy customization
+* Accessibility-focused design
+
+---
+
+## 🚀 How to Run
+
+### 🧩 Option 1 — Using C Library (Default)
+
+```bash
+cd 911
+export BACKEND=c_library
+python3 app_integrated.py
 ```
-Step 4: Access the Application Locally
-Open your browser and go to ```http://127.0.0.1:5000/```.
-This is your local server where the Flask app is running. You should be able to see the home page of your case management application.
+
+      Visit 👉 [http://localhost:5001](http://localhost:5001)
+
+### 🗃️ Option 2 — Using Database Backend
+
+```bash
+cd 911
+export BACKEND=database
+python3 app_integrated.py
+```
+
+      Visit 👉 [http://localhost:5001](http://localhost:5001)
+
+---
+
+## 🧰 Rebuilding the C Library
+
+If you modify `main.c`, recompile with:
+
+```bash
+gcc -shared -o libcases.so -fPIC main.c
+```
+
+---
+
+## 📊 Data Flow
+
+```
+User Browser
+     ↓
+Flask Routes
+     ↓
+Backend Abstraction Layer
+     ↓
+┌───────────────┬────────────────┐
+│  C Library     │  Database      │
+│ (ctypes)       │ (SQLAlchemy)   │
+└───────────────┴────────────────┘
+```
+
+---
+
+## 🔧 Dependencies
+
+### 📦 Install Required Packages
+
+```bash
+pip install flask flask_sqlalchemy
+```
+
+### 🖥️ System Requirements
+
+* Python 3.7+
+* GCC compiler (for C library)
+* SQLite (preinstalled with Python)
+
+---
+
+## 📈 Features
+
+Both backends support:
+
+* ➕ Add emergency cases
+* 🔍 View and search cases
+* 🏥 Assign departments (Fire, Healthcare, Police)
+* ❌ Delete cases
+* 📊 View priority statistics
+* 🧭 Responsive emergency-themed dashboard
+
+---
+
+## ⚙️ Technical Highlights
+
+### 🧩 ctypes Integration Example
+
+```c
+// C function signature
+int add_case(const char* type, const char* loc, int pri, const char* dept);
+```
+
+```python
+# Python wrapper
+lib.add_case.argtypes = [c_char_p, c_char_p, c_int, c_char_p]
+lib.add_case.restype = c_int
+
+# Usage
+case_id = lib.add_case(b"Fire", b"123 Main St", 1, b"Fire Dept")
+```
+
+### 🛠️ Dual Compilation
+
+```bash
+# As CLI executable
+gcc -o dispatcher main.c
+
+# As Shared Library
+gcc -shared -o libcases.so -fPIC main.c
+```
+
+---
+
+## 🧪 Testing
+
+To validate integration:
+
+```bash
+cd 911
+python3 test_library.py
+```
+
+✅ All tests should pass successfully.
+
+---
+
+## 📝 Key Notes
+
+* 🧠 C Backend data is stored in memory — resets after app restart
+* 💾 Database Backend data persists via SQLite
+* 🔁 Both backends offer identical routes and functionality
+* 🪵 Logs may differ slightly due to backend storage differences
+
+---
+
+## 🎓 Learning Outcomes
+
+Through this project, you’ll learn:
+
+* 🔗 Interfacing C and Python with ctypes
+* 🧩 Building shared libraries
+* 🧠 Implementing backend abstraction and switching
+* 🧮 Writing doubly linked lists in C
 
 
-**This includes all the sections you requested and should be a good fit for the README. Let me know if you'd like any further adjustments!**
+
+
+
